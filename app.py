@@ -1,125 +1,77 @@
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer
 
-from utils.webcam import EmotionProcessor
-from utils.speech_recognition import recognize_speech
-from utils.text_prediction import predict_text_emotion
-from utils.face_detection import get_current_face_prediction
-from utils.fusion import fuse_emotions
+from utils.model_loader import missing_models
 
-# --------------------------------------------------
-# Page Configuration
-# --------------------------------------------------
+
+def render_model_status():
+    """Show model readiness banner; returns True when all models are present."""
+    missing = missing_models()
+
+    if missing:
+        st.error(
+            "Required model files are missing. Ensure Git LFS assets are pulled "
+            "and the `models/` directory is deployed with the app."
+        )
+        with st.expander("Missing files"):
+            for item in missing:
+                st.write(f"- {item}")
+        return False
+
+    st.success("All model files found. Select a mode from the sidebar to begin.")
+    return True
+
+
 st.set_page_config(
     page_title="Multimodal Emotion Recognition",
     page_icon="😊",
-    layout="wide"
+    layout="wide",
 )
 
-# --------------------------------------------------
-# Title
-# --------------------------------------------------
 st.title("😊 Multimodal Emotion Recognition System")
-st.markdown("---")
+st.markdown(
+    """
+    Production-ready Streamlit app for **facial** and **speech-based** emotion recognition
+    with multimodal fusion. Optimized for [Streamlit Cloud](https://streamlit.io/cloud)
+    using browser webcam and microphone capture.
+    """
+)
 
-# --------------------------------------------------
-# Sidebar
-# --------------------------------------------------
-st.sidebar.title("Project Information")
+st.divider()
 
-st.sidebar.markdown("### Models Used")
+col1, col2 = st.columns(2)
 
-st.sidebar.success("✅ CNN (FER)")
-st.sidebar.success("✅ SVC")
-st.sidebar.success("✅ Random Forest")
-st.sidebar.success("✅ XGBoost")
-
-st.sidebar.markdown("---")
-st.sidebar.info("System Ready")
-
-# --------------------------------------------------
-# Layout
-# --------------------------------------------------
-left, right = st.columns([2, 1])
-
-# ==================================================
-# Webcam Section
-# ==================================================
-with left:
-
-    st.subheader("📷 Facial Emotion Recognition")
-
-    webrtc_streamer(
-        key="emotion",
-        video_processor_factory=EmotionProcessor,
-        media_stream_constraints={
-            "video": True,
-            "audio": False
-        }
+with col1:
+    st.subheader("📸 Snapshot Prediction")
+    st.markdown(
+        """
+        - Live webcam face emotion detection
+        - Record speech from your browser microphone
+        - Instant multimodal fusion result
+        """
     )
+    st.page_link("pages/1_Snapshot_Prediction.py", label="Open Snapshot Mode →")
 
-# ==================================================
-# Speech Section
-# ==================================================
-with right:
+with col2:
+    st.subheader("📈 Continuous Monitoring")
+    st.markdown(
+        """
+        - Continuous face sampling with 30-second fusion windows
+        - Submit speech samples during each window
+        - Session history, analytics, and CSV export
+        """
+    )
+    st.page_link("pages/2_Continuous_Monitoring.py", label="Open Monitoring Mode →")
 
-    st.subheader("🎤 Speech Emotion Recognition")
+st.divider()
+st.subheader("System Status")
+render_model_status()
 
-    if st.button("🎙 Start Recording", use_container_width=True):
-
-        with st.spinner("Listening..."):
-
-            text = recognize_speech()
-
-        if text:
-
-            st.success("✅ Speech Recognized")
-
-            st.text_area(
-                "Recognized Speech",
-                value=text,
-                height=120
-            )
-
-            svc, rf, xgb, final_text = predict_text_emotion(text)
-
-            # Get latest face prediction
-            face_emotion, face_confidence = get_current_face_prediction()
-
-            # Fuse emotions
-            final_emotion = fuse_emotions(
-                face_emotion,
-                final_text
-            )
-
-            st.markdown("---")
-
-            st.subheader("Prediction Results")
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-                st.write("**SVC**")
-                st.success(svc)
-
-                st.write("**Random Forest**")
-                st.success(rf)
-
-            with col2:
-                st.write("**XGBoost**")
-                st.success(xgb)
-
-                st.write("**Final Text Emotion**")
-                st.success(final_text)
-
-            st.markdown("---")
-
-            st.subheader("🧠 Multimodal Emotion")
-
-            st.write(f"😀 **Face Emotion:** {face_emotion}")
-            st.write(f"💬 **Text Emotion:** {final_text}")
-
-            st.success(f"🎯 Final Emotion: {final_emotion}")
-
-        else:
-            st.error("❌ Could not recognize speech.")
+with st.sidebar:
+    st.markdown("### Models")
+    st.markdown("- CNN (FER) — facial emotions")
+    st.markdown("- SVC, Random Forest, XGBoost — text emotions")
+    st.markdown("---")
+    st.caption(
+        "Grant camera and microphone permissions when prompted. "
+        "Use Chrome or Edge for best WebRTC support."
+    )

@@ -10,15 +10,16 @@ pandas==2.2.3
 
 scikit-learn==1.6.1
 joblib==1.4.2
+xgboost==2.1.4
 
 SpeechRecognition==3.14.3
-PyAudio==0.2.14
+nltk==3.9.1
 
 Pillow==11.2.1
-
 av==14.4.0
-
-matplotlib==3.10.3
 
 protobuf==5.29.4
 h5py==3.13.0
+
+# PyAudio is optional (local dev only). Browser audio via st.audio_input is used on Streamlit Cloud.
+# PyAudio==0.2.14

@@ -170,3 +170,5 @@ class SessionManager:
         self.timer.reset()
 
         self.history_manager.clear()
+
+        self.last_saved_second = -1

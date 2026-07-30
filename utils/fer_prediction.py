@@ -1,40 +1,20 @@
 import cv2
 import numpy as np
-from tensorflow.keras.models import load_model
 
-from utils.constants import FER_MODEL_PATH, IMG_SIZE, EMOTIONS
-
-
-# -----------------------------
-# Load FER Model
-# -----------------------------
-model = load_model(FER_MODEL_PATH)
+from utils.constants import EMOTIONS, IMG_SIZE
+from utils.model_loader import load_fer_model
 
 
-# -----------------------------
-# Predict Emotion
-# -----------------------------
 def predict_emotion(face):
+    model = load_fer_model()
 
-    # Resize face
     face = cv2.resize(face, (IMG_SIZE, IMG_SIZE))
-
-    # Normalize
     face = face.astype("float32") / 255.0
-
-    # Shape -> (48,48,1)
     face = np.expand_dims(face, axis=-1)
-
-    # Shape -> (1,48,48,1)
     face = np.expand_dims(face, axis=0)
 
-    # Prediction
     prediction = model.predict(face, verbose=0)[0]
-
-    emotion_index = np.argmax(prediction)
-
+    emotion_index = int(np.argmax(prediction))
     confidence = float(np.max(prediction))
 
-    emotion = EMOTIONS[emotion_index]
-
-    return emotion, confidence
+    return EMOTIONS[emotion_index], confidence
