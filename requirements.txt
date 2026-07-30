@@ -15,7 +15,6 @@ SpeechRecognition==3.14.3
 
 Pillow==11.2.1
 
-av==12.3.0
 
 matplotlib==3.10.3
 
