@@ -1,0 +1,11 @@
+Time,Face Emotion,Face Confidence,Frames,Speech Emotion,Speech Samples,Final Emotion
+21:10:57,Neutral,71.69,10,No Speech,0,Sad
+21:11:28,Neutral,77.74,21,No Speech,0,Sad
+21:11:58,Neutral,75.25,21,neutral,1,Neutral
+21:12:30,Neutral,77.63,21,neutral,1,Neutral
+21:20:04,Neutral,65.45,17,negative,1,Sad
+21:20:39,Neutral,65.45,13,No Speech,0,Sad
+21:21:11,Neutral,67.22,16,neutral,1,Neutral
+21:21:41,Neutral,75.31,13,No Speech,0,Sad
+21:22:11,Neutral,80.37,14,negative,1,Sad
+21:22:44,Neutral,73.54,10,neutral,1,Neutral

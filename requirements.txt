@@ -1,0 +1,14 @@
+streamlit
+streamlit-webrtc
+opencv-python
+tensorflow
+numpy
+pandas
+joblib
+scikit-learn
+xgboost
+SpeechRecognition
+PyAudio
+nltk
+Pillow
+av
